@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: sans-serif;
+            background: linear-gradient(to left, #cdb4db, #a2d2ff);
+            color: #333;
+        }
+
+        .container {
+            width: 95%;
+            margin: 50px auto;
+        }
+
+        h1 {
+            text-align: center;
+
+        }
+
+        form {
+            display: block;
+            margin: 0 auto;
+            border-radius: 20px;
+            padding: 20px;
+            width: 500px;
+            box-shadow: 0px 0px 15px 5px #bde0fe;
+        }
+
+        .items-wrap {
+            display: block;
+            margin: 20px 0;
+
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        input {
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+
+        }
+
+        label {
+            font-weight: bold;
+
+        }
+
+        button {
+            padding: 8px;
+            background-color: #ffcBdd;
+            color: #333;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        button.hover {
+            background-color: #ffafcc;
+            color: white;
+
+        }
+
+        #task-list {
+            margin: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+
+        }
+
+        .task {
+            background-color: #bde0fe;
+            border-radius: 20px;
+            padding: 10px;
+            margin: 20px;
+
+        }
+
+        .task span {
+            font-weight: bold;
+        }
+
+        .delete {
+            color: hotpink;
+            cursor: pointer;
+            float: right;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form action="" id="task-form">
+            <h1>Task Notes</h1>
+            <div class="items-wrap">
+                <label for="task-date">Date: </label>
+                <input type="date" id="task-date" required>
+            </div>
+
+            <div class="items-wrap">
+                <label for="task-time">Time: </label>
+                <input type="time" id="task-time" required>
+            </div>
+
+            <div class="items-wrap">
+                <label for="task-deatils">Details: </label>
+                <textarea name="" id="task-details" placeholder="write your task details" required></textarea>
+            </div>
+            <button type="submit">ADD TASK</button>
+        </form>
+
+        <div id="task-list"></div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const taskForm = document.getElementById('taskForm');
+            const taskInput = document.getElementById('taskInput');
+            const taskList = document.getElementById('taskList');
+            const clearCompletedButton = document.getElementById('clearCompleted');
+
+            // Load tasks from local storage
+            const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+            // Function to save tasks to local storage
+            function saveTasks() {
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+            }
+
+            // Function to add a new task
+            function addTask(taskText) {
+                const task = {
+                    id: Date.now(),
+                    text: taskText,
+                    completed: false,
+                };
+                tasks.push(task);
+                saveTasks();
+                displayTasks();
+            }
+
+            // Function to delete a task
+            function deleteTask(taskId) {
+                const taskIndex = tasks.findIndex(task => task.id === taskId);
+                if (taskIndex !== -1) {
+                    tasks.splice(taskIndex, 1);
+                    saveTasks();
+                    displayTasks();
+                }
+            }
+
+            // Function to toggle task completion status
+            function toggleTaskStatus(taskId) {
+                const task = tasks.find(task => task.id === taskId);
+                if (task) {
+                    task.completed = !task.completed;
+                    saveTasks();
+                    displayTasks();
+                }
+            }
+
+            // Function to display tasks in the UI
+            function displayTasks() {
+                taskList.innerHTML = '';
+                tasks.forEach(task => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                <input type="checkbox" ${task.completed ? 'checked' : ''}>
+                <span>${task.text}</span>
+                <button class="delete">Delete</button>
+            `;
+                    const checkbox = listItem.querySelector('input[type="checkbox"]');
+                    const deleteButton = listItem.querySelector('.delete');
+
+                    checkbox.addEventListener('change', () => toggleTaskStatus(task.id));
+                    deleteButton.addEventListener('click', () => deleteTask(task.id));
+
+                    taskList.appendChild(listItem);
+                });
+            }
+
+            // Function to clear completed tasks
+            function clearCompletedTasks() {
+                tasks.forEach((task, index) => {
+                    if (task.completed) {
+                        tasks.splice(index, 1);
+                    }
+                });
+                saveTasks();
+                displayTasks();
+            }
+
+            // Event listener for adding a new task
+            taskForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                const taskText = taskInput.value.trim();
+                if (taskText) {
+                    addTask(taskText);
+                    taskInput.value = '';
+                }
+            });
+
+            // Event listener for clearing completed tasks
+            clearCompletedButton.addEventListener('click', clearCompletedTasks);
+
+            // Initial display of tasks
+            displayTasks();
+        });
+
+    </script>
+</body>
+
+</html>

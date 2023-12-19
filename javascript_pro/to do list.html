@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            font-family: sans-serif;
+            background: linear-gradient(to left, #cdb4db, #a2d2ff);
+            color: #333;
+        }
+        .container{
+            width: 95%;
+            margin: 50px auto;
+        }
+        h1{
+            text-align: center;
+
+        }
+        form{
+            display: block;
+            margin: 0 auto;
+            border-radius: 20px;
+            padding: 20px;
+            width: 500px;
+            box-shadow: 0px 0px 15px 5px #bde0fe;
+        }
+        .items-wrap{
+            display: block;
+            margin: 20px 0;
+
+        }
+        input[type="text"],
+        textarea{
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        input{
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+
+        }
+        label{
+            font-weight: bold;
+
+        }
+        button{
+            padding: 8px;
+            background-color: #ffcBdd;
+            color: #333;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        button.hover{
+            background-color: #ffafcc;
+            color: white;
+
+        }
+        #task-list{
+            margin: 20px;
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
+
+        }
+        .task{
+            background-color: #bde0fe;
+            border-radius: 20px;
+            padding: 10px;
+            margin: 20px;
+
+        }
+        .task span{
+            font-weight: bold;
+        }
+         .delete{ 
+            color: hotpink;
+            cursor: pointer;
+            float: right;
+        }
+       
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form action="" id="task-form">
+        <h1>Task Notes</h1>
+        <div class="items-wrap">
+            <label for="task-date">Date: </label>
+            <input type="date" id="task-date" required>
+        </div>
+
+        <div class="items-wrap">
+            <label for="task-time">Time: </label>
+            <input type="time" id="task-time" required>
+            </div>
+
+        <div class="items-wrap">
+            <label for="task-deatils">Details: </label>
+            <textarea 
+            name="" 
+            id="task-details"
+            placeholder="write your task details"
+            required></textarea>
+        </div>
+         <button type="submit">ADD TASK</button>
+    </form>
+    
+    <div id="task-list"></div>
+</div>
+<script>
+           const form = document.getElementById("task-form");
+           const tasklist = document.getElementById("task-list");
+
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const date = document.getElementById("task-date").value;
+        const time = document.getElementById("task-time").value;
+        const details = document.getElementById("task-details").value;
+
+
+        if (localStorage.getItem(task-list)) {
+            return;
+        }
+        // Store the user's information in local storage
+        localStorage.setItem("task-date","task-time","task-details");
+          task-list.reset()
+
+        const task = document.createElement("div");
+        task.className = "task";
+
+        const taskcontent = document.createElement("span");
+        taskcontent.innerHTML = `Date: ${date}<br>Time: ${time}<br>Details: ${details}`;
+        
+        const deleteBtn = document.createElement("span");
+        deleteBtn.className = "delete";
+        deleteBtn.innerHTML = "Delete";
+        deleteBtn.addEventListener("click", () => {
+            task.remove();
+        });
+
+        task.appendChild(taskcontent);
+        task.appendChild(deleteBtn);
+
+        tasklist.appendChild(task);
+
+        document.getElementById("task-date").value = "";
+        document.getElementById("task-time").value = "";
+        document.getElementById("task-details").value = "";
+    });
+
+</script>
+</body>
+</html>

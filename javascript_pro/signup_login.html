@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Authentication</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Style the authentication container */
+.auth-container {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+}
+/* Style the forms */
+form {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 10px;
+    width: 200px;
+}
+
+label, input {
+    display: block;
+    margin: 10px 0;
+}
+
+button {
+    margin-top: 10px;
+}
+
+    </style>
+</head>
+<body>
+    <h2>User Authentication</h2>
+    <div class="auth-container">
+        <div class="signup-form">
+            <h3>Sign Up</h3>
+            <form id="signupForm">
+                <label for="signupUsername">Username:</label>
+                <input type="text" id="signupUsername" required>
+                <label for="signupPassword">Password:</label>
+                <input type="password" id="signupPassword" required>
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+        <div class="login-form">
+            <h3>Login</h3>
+            <form id="loginForm">
+                <label for="loginUsername">Username:</label>
+                <input type="text" id="loginUsername" required>
+                <label for="loginPassword">Password:</label>
+                <input type="password" id="loginPassword" required>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+    <div id="feedback"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const signupForm = document.getElementById('signupForm');
+    const loginForm = document.getElementById('loginForm');
+    const feedback = document.getElementById('feedback');
+
+    // Function to handle user registration (sign-up)
+    function signUp(event) {
+        event.preventDefault();
+        const signupUsername = document.getElementById('signupUsername').value;
+        const signupPassword = document.getElementById('signupPassword').value;
+
+        // Check if the username already exists in local storage
+        if (localStorage.getItem(signupUsername)) {
+            displayFeedback('Username already exists. Please choose another.');
+            return;
+        }
+        // Store the user's information in local storage
+        localStorage.setItem(signupUsername, signupPassword);
+        displayFeedback('Account created successfully. You can now log in.');
+
+        // Clear the sign-up form
+        signupForm.reset();
+    }
+
+    // Function to handle user login
+    function login(event) {
+        event.preventDefault();
+        const loginUsername = document.getElementById('loginUsername').value;
+        const loginPassword = document.getElementById('loginPassword').value;
+
+        // Check if the username exists in local storage
+        const storedPassword = localStorage.getItem(loginUsername);
+        if (storedPassword === null || storedPassword !== loginPassword) {
+            displayFeedback('Login failed. Please check your credentials.');
+            return;
+        }
+
+        displayFeedback('Login successful.');
+
+        // Clear the login form
+        loginForm.reset();
+    }
+
+    // Function to display feedback messages
+    function displayFeedback(message) {
+        feedback.textContent = message;
+        setTimeout(() => {
+            feedback.textContent = '';
+        }, 3000);
+    }
+
+    // Add event listeners to the sign-up and login forms
+    signupForm.addEventListener('submit', signUp);
+    loginForm.addEventListener('submit', login);
+});
+
+    </script>
+</body>
+</html>
